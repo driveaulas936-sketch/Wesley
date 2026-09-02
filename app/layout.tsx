@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'pt_BR',
     title: 'Wesley Rodrigues | Estratégias de Low Ticket',
-    description: 'Da portaria a mais de R$ 1 milhão faturados no digital. Conheça a trajetória e a estrutura de low ticket utilizada por Wesley Rodrigues.',
+    description: 'Da portaria a mais de R$ 1 milhão faturado no digital. Conheça a trajetória e a estrutura de low ticket utilizada por Wesley Rodrigues.',
     images: [{ url: '/og.png', width: 1733, height: 908, alt: 'Wesley Rodrigues — Estratégias de Low Ticket' }],
   },
   twitter: {

@@ -15,7 +15,7 @@ export const siteContent = {
     eyebrow: 'Conheça a estratégia que mudou a minha trajetória',
     headlineStart: 'De porteiro a mais de',
     headlineHighlight: 'R$ 1 milhão',
-    headlineEnd: 'faturados no digital.',
+    headlineEnd: 'faturado no digital.',
     subheadline: 'Eu vou te mostrar o modelo de produtos low ticket que utilizo para construir vendas pela internet — com oferta, processo e decisões baseadas em dados.',
     cta: 'Quero me inscrever',
   },
@@ -30,7 +30,6 @@ export const siteContent = {
   method: [
     { title: 'Produto', text: 'Uma solução clara para um problema específico.' },
     { title: 'Oferta', text: 'A forma de apresentar valor e facilitar a decisão.' },
-    { title: 'Página', text: 'A mensagem que transforma atenção em interesse.' },
     { title: 'Tráfego', text: 'O caminho para colocar a oferta diante das pessoas.' },
     { title: 'Conversão', text: 'A passagem do interesse para a compra.' },
     { title: 'Otimização', text: 'Melhorias orientadas pelo comportamento e pelos dados.' },

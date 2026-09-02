@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { ArrowDown, ArrowRight, ArrowUpRight, AtSign, BarChart3, Check, CircleDollarSign, Layers3, MousePointerClick, Pause, Play, Sparkles, Target, TrendingUp, X } from 'lucide-react';
+import { ArrowDown, ArrowRight, ArrowUpRight, AtSign, BarChart3, Check, CircleDollarSign, Layers3, MousePointerClick, Pause, Play, Sparkles, Target, TrendingUp, Volume2, VolumeX, X } from 'lucide-react';
 import { siteContent } from './content';
 
 const c = siteContent;
@@ -55,6 +55,7 @@ function SalesVideo({ unlocked, onUnlock }: { unlocked: boolean; onUnlock: () =>
   const videoRef = useRef<HTMLVideoElement>(null);
   const lastPlayedTimeRef = useRef(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [playbackRate, setPlaybackRate] = useState(1);
 
   const togglePlayback = () => {
@@ -72,6 +73,13 @@ function SalesVideo({ unlocked, onUnlock }: { unlocked: boolean; onUnlock: () =>
     setPlaybackRate(nextRate);
   };
 
+  const toggleMuted = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = !video.muted;
+    setIsMuted(video.muted);
+  };
+
   const playbackRateLabel = playbackRate === 1 ? '1x' : playbackRate === 1.25 ? '1,25x' : '1,5x';
 
   return (
@@ -80,14 +88,17 @@ function SalesVideo({ unlocked, onUnlock }: { unlocked: boolean; onUnlock: () =>
         <video
           ref={videoRef}
           className="size-full cursor-pointer object-contain"
+          autoPlay
+          muted
           controls={false}
           disablePictureInPicture
           playsInline
-          preload="metadata"
+          preload="auto"
           onClick={togglePlayback}
           onContextMenu={(event) => event.preventDefault()}
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
+          onVolumeChange={(event) => setIsMuted(event.currentTarget.muted)}
           onSeeking={(event) => {
             const video = event.currentTarget;
             if (Math.abs(video.currentTime - lastPlayedTimeRef.current) > 1) video.currentTime = lastPlayedTimeRef.current;
@@ -113,9 +124,12 @@ function SalesVideo({ unlocked, onUnlock }: { unlocked: boolean; onUnlock: () =>
           <button type="button" onClick={cyclePlaybackRate} className="grid min-h-12 min-w-12 place-items-center rounded-full border border-white/10 bg-black/75 px-3 text-xs font-extrabold text-white shadow-lg backdrop-blur transition hover:bg-black/90" aria-label={`Velocidade do vídeo: ${playbackRateLabel}. Máximo de 1,5x.`} title="Alterar velocidade até 1,5x">
             {playbackRateLabel}
           </button>
+          <button type="button" onClick={toggleMuted} className="grid size-12 place-items-center rounded-full border border-white/10 bg-black/75 text-white shadow-lg backdrop-blur transition hover:bg-black/90" aria-label={isMuted ? 'Ativar som do vídeo' : 'Silenciar vídeo'} title={isMuted ? 'Ativar som' : 'Silenciar'}>
+            {isMuted ? <VolumeX className="size-5" aria-hidden="true" /> : <Volume2 className="size-5" aria-hidden="true" />}
+          </button>
         </div>
       </div>
-      <div className="mt-4 rounded-2xl border border-amber-400/25 bg-[#0b0b0a]/95 px-5 py-4 shadow-2xl backdrop-blur"><p className="font-mono text-[9px] uppercase tracking-[0.18em] text-stone-500">Marco da minha trajetória</p><p className="mt-1 text-2xl font-extrabold tracking-tight text-stone-50">+ R$ 1 milhão</p><p className="text-xs text-amber-300">faturados no digital</p></div>
+      <div className="mt-4 rounded-2xl border border-amber-400/25 bg-[#0b0b0a]/95 px-5 py-4 shadow-2xl backdrop-blur"><p className="font-mono text-[9px] uppercase tracking-[0.18em] text-stone-500">Marco da minha trajetória</p><p className="mt-1 text-2xl font-extrabold tracking-tight text-stone-50">+ R$ 1 milhão</p><p className="text-xs text-amber-300">faturado no digital</p></div>
     </div>
   );
 }
@@ -167,7 +181,7 @@ function AnimatedRevenue() {
     observer.observe(node);
     return () => observer.disconnect();
   }, []);
-  return <p ref={ref} aria-label="Mais de um milhão de reais faturados no digital" className="whitespace-nowrap text-[clamp(2.65rem,10vw,9.5rem)] font-extrabold leading-none tracking-[-0.075em] text-amber-400">+ R$ {value.toLocaleString('pt-BR')}</p>;
+  return <p ref={ref} aria-label="Mais de um milhão de reais faturado no digital" className="whitespace-nowrap text-[clamp(2.65rem,10vw,9.5rem)] font-extrabold leading-none tracking-[-0.075em] text-amber-400">+ R$ {value.toLocaleString('pt-BR')}</p>;
 }
 
 const benefitIcons = [Target, CircleDollarSign, Layers3, TrendingUp, MousePointerClick, BarChart3];
@@ -324,8 +338,11 @@ export function LandingPage() {
           <Reveal>
             <SectionHeader index="01" eyebrow="Minha história" title="Antes do digital, a minha realidade era completamente diferente." />
             <div className="mt-8 space-y-5 text-base leading-8 text-stone-400">
-              <p>Antes de viver do digital, eu trabalhava como porteiro. Quando entrei no mercado digital, comecei a trabalhar com produtos digitais e a entender como uma operação de vendas pela internet funciona.</p>
-              <p>Foi no Low Ticket que encontrei o meu principal modelo. Com essa estrutura, ultrapassei <strong className="font-semibold text-stone-100">R$ 1 milhão faturado na internet</strong> e, hoje, continuo operando no digital utilizando esse mesmo modelo.</p>
+              <p>Antes de viver do digital, eu trabalhava como porteiro. Quando entrei nesse mercado, comecei a entender como funcionavam os produtos digitais, os anúncios e toda a estrutura por trás de uma operação de vendas online.</p>
+              <p>Foi no Low Ticket que encontrei o modelo que mais fez sentido para mim. A barreira de entrada é muito baixa quando comparada a outros modelos de negócio, e você não precisa começar com uma grande estrutura ou investimento alto.</p>
+              <p>Com o conhecimento certo, uma oferta bem montada e uma estrutura organizada, é possível criar uma operação que vende de forma automática, sem precisar estar presente em cada venda.</p>
+              <p>Foi esse modelo que me mostrou que é possível construir uma operação simples, escalável e previsível no digital.</p>
+              <p>Foi no Low Ticket que encontrei o meu principal modelo. Com essa estrutura, ultrapassei <strong className="font-semibold text-stone-100">R$ 1 milhão faturado na internet</strong>.</p>
               <p><strong className="font-semibold text-amber-300">Foi isso que mudou a minha trajetória no digital.</strong></p>
             </div>
             <div className="mt-9"><CTAButton unlocked={ctaUnlocked} /></div>
@@ -333,7 +350,7 @@ export function LandingPage() {
         </div>
         <Reveal className="mx-auto mt-16 max-w-[1320px] lg:mt-24">
           <div className="grid gap-3 lg:grid-cols-[1fr_auto_1fr_auto_1fr] lg:items-stretch">
-            {[['Antes', 'Porteiro', 'Eu ainda não tinha fama, grande estrutura ou conhecimento avançado.'], ['Processo', 'Mercado digital', 'Eu aprendi, apliquei e comecei a construir uma operação.'], ['Trajetória', '+ R$ 1 milhão', 'Foi assim que ultrapassei R$ 1 milhão faturado na internet.']].map(([label, title, text], index) => (
+            {[['Antes', 'Porteiro', 'Eu ainda não tinha fama, grande estrutura ou conhecimento avançado.'], ['Processo', 'Mercado digital', 'Eu aprendi, apliquei e comecei a construir uma operação.'], ['Trajetória', '+ R$ 1 milhão', '1 milhão faturado']].map(([label, title, text], index) => (
               <div key={label} className="contents">
                 <article className={`rounded-3xl border p-7 sm:p-9 ${index === 2 ? 'border-amber-400/35 bg-amber-400/[0.07]' : 'border-white/10 bg-white/[0.025]'}`}><p className="font-mono text-[9px] uppercase tracking-[0.18em] text-stone-500">{label}</p><h3 className={`mt-7 text-3xl font-extrabold tracking-[-0.04em] sm:text-4xl ${index === 2 ? 'text-amber-300' : 'text-stone-100'}`}>{title}</h3><p className="mt-4 text-sm leading-6 text-stone-400">{text}</p></article>
                 {index < 2 && <div className="grid place-items-center py-2 text-stone-600 lg:px-2"><ArrowRight className="hidden size-5 lg:block" aria-hidden="true" /><ArrowDown className="size-5 lg:hidden" aria-hidden="true" /></div>}
