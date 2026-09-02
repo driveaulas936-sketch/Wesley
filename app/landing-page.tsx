@@ -38,13 +38,14 @@ function SectionHeader({ index, eyebrow, title, text, align = 'left' }: { index:
   );
 }
 
-function CTAButton({ label = 'Quero me inscrever', light = false, unlocked }: { label?: string; light?: boolean; unlocked: boolean }) {
+function CTAButton({ label = 'Quero me inscrever', light = false, unlocked, pulse = false }: { label?: string; light?: boolean; unlocked: boolean; pulse?: boolean }) {
   const colors = light ? 'bg-stone-950 text-stone-50 hover:bg-stone-800' : 'bg-amber-400 text-stone-950 hover:bg-amber-300';
+  const pulseStyle = pulse ? 'animate-[pulse_1.6s_ease-in-out_infinite] ring-2 ring-amber-300/60 ring-offset-4 ring-offset-[#0b0b0a]' : '';
 
   if (!unlocked) return null;
 
   return (
-    <a href={c.links.salesPage} className={`group inline-flex min-h-14 w-full items-center justify-center gap-3 rounded-full px-7 text-center text-xs font-extrabold uppercase tracking-[0.07em] shadow-[0_18px_55px_rgba(245,158,11,0.15)] transition duration-300 hover:-translate-y-1 active:translate-y-0 sm:w-auto sm:text-sm ${colors}`}>
+    <a href={c.links.salesPage} className={`group inline-flex min-h-14 w-full items-center justify-center gap-3 rounded-full px-7 text-center text-xs font-extrabold uppercase tracking-[0.07em] shadow-[0_18px_55px_rgba(245,158,11,0.15)] transition duration-300 hover:-translate-y-1 active:translate-y-0 sm:w-auto sm:text-sm ${pulseStyle} ${colors}`}>
       {label}<ArrowUpRight className="size-4 shrink-0 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
     </a>
   );
@@ -57,6 +58,16 @@ function SalesVideo({ unlocked, onUnlock }: { unlocked: boolean; onUnlock: () =>
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [playbackRate, setPlaybackRate] = useState(1);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+
+  const formatTime = (seconds: number) => {
+    const safeSeconds = Math.ceil(Math.max(0, seconds));
+    const minutes = Math.floor(safeSeconds / 60);
+    return `${String(minutes).padStart(2, '0')}:${String(safeSeconds % 60).padStart(2, '0')}`;
+  };
+  const progress = duration > 0 ? Math.min(100, (currentTime / duration) * 100) : 0;
+  const remaining = Math.max(0, duration - currentTime);
 
   const togglePlayback = () => {
     const video = videoRef.current;
@@ -99,13 +110,17 @@ function SalesVideo({ unlocked, onUnlock }: { unlocked: boolean; onUnlock: () =>
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
           onVolumeChange={(event) => setIsMuted(event.currentTarget.muted)}
+          onLoadedMetadata={(event) => setDuration(event.currentTarget.duration)}
           onSeeking={(event) => {
             const video = event.currentTarget;
             if (Math.abs(video.currentTime - lastPlayedTimeRef.current) > 1) video.currentTime = lastPlayedTimeRef.current;
           }}
           onTimeUpdate={(event) => {
-            lastPlayedTimeRef.current = event.currentTarget.currentTime;
-            if (event.currentTarget.currentTime >= unlockAtSeconds) onUnlock();
+            const video = event.currentTarget;
+            lastPlayedTimeRef.current = video.currentTime;
+            setCurrentTime(video.currentTime);
+            if (video.duration && video.duration !== duration) setDuration(video.duration);
+            if (video.currentTime >= unlockAtSeconds) onUnlock();
           }}
           onEnded={() => { setIsPlaying(false); onUnlock(); }}
           aria-label="Vídeo de apresentação do Low Ticket na Prática"
@@ -117,7 +132,19 @@ function SalesVideo({ unlocked, onUnlock }: { unlocked: boolean; onUnlock: () =>
           <span>Vídeo de apresentação</span>
           <span className={unlocked ? 'text-emerald-300' : 'text-amber-300'}>{unlocked ? 'Acesso liberado' : 'Libera aos 02:30'}</span>
         </div>
-        <div className="absolute bottom-4 left-4 flex items-center gap-2" aria-label="Controles do vídeo">
+        {isMuted && (
+          <button
+            type="button"
+            onClick={toggleMuted}
+            className="absolute left-1/2 top-[29%] flex w-[78%] -translate-x-1/2 flex-col items-center gap-2 rounded-2xl border border-violet-200/25 bg-black/70 px-4 py-3 text-center shadow-2xl backdrop-blur-md transition hover:scale-[1.02] hover:bg-black/85"
+            aria-label="Ativar som do vídeo"
+          >
+            <Volume2 className="size-5 text-violet-300" aria-hidden="true" />
+            <span className="font-mono text-[8px] uppercase tracking-[0.14em] text-stone-300">Seu vídeo já começou</span>
+            <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-white">Clique aqui para ativar o som</span>
+          </button>
+        )}
+        <div className="absolute bottom-12 left-4 flex items-center gap-2" aria-label="Controles do vídeo">
           <button type="button" onClick={togglePlayback} className="grid size-12 place-items-center rounded-full border border-white/10 bg-black/75 text-white shadow-lg backdrop-blur transition hover:bg-black/90" aria-label={isPlaying ? 'Pausar vídeo' : 'Reproduzir vídeo'}>
             {isPlaying ? <Pause className="size-5" aria-hidden="true" /> : <Play className="ml-0.5 size-5 fill-current" aria-hidden="true" />}
           </button>
@@ -128,8 +155,17 @@ function SalesVideo({ unlocked, onUnlock }: { unlocked: boolean; onUnlock: () =>
             {isMuted ? <VolumeX className="size-5" aria-hidden="true" /> : <Volume2 className="size-5" aria-hidden="true" />}
           </button>
         </div>
+        <div className="absolute inset-x-4 bottom-4 rounded-xl border border-white/10 bg-black/60 px-3 py-2.5 backdrop-blur">
+          <div className="h-1.5 overflow-hidden rounded-full bg-white/10" role="progressbar" aria-label="Progresso do vídeo" aria-valuemin={0} aria-valuemax={Math.round(duration)} aria-valuenow={Math.round(currentTime)}>
+            <div className="h-full rounded-full bg-amber-400 shadow-[0_0_14px_rgba(251,191,36,0.85)] transition-[width] duration-300" style={{ width: `${progress}%` }} />
+          </div>
+          <div className="mt-2 flex items-center justify-between font-mono text-[8px] uppercase tracking-[0.12em] text-stone-400">
+            <span>Progresso do vídeo</span>
+            <span className="text-amber-300">{duration ? `Faltam ${formatTime(remaining)}` : 'Carregando…'}</span>
+          </div>
+        </div>
       </div>
-      <div className="mt-4"><CTAButton label="Quero me inscrever" unlocked={unlocked} /></div>
+      <div className="mt-4"><CTAButton label="Quero me inscrever" unlocked={unlocked} pulse /></div>
       <div className="mt-3 rounded-2xl border border-amber-400/25 bg-[#0b0b0a]/95 px-5 py-4 shadow-2xl backdrop-blur"><p className="font-mono text-[9px] uppercase tracking-[0.18em] text-stone-500">Marco da minha trajetória</p><p className="mt-1 text-2xl font-extrabold tracking-tight text-stone-50">+ R$ 1 milhão</p><p className="text-xs text-amber-300">faturado no digital</p></div>
     </div>
   );
@@ -292,6 +328,19 @@ function IntroExperience({ children }: { children: ReactNode }) {
 
 export function LandingPage() {
   const [ctaUnlocked, setCtaUnlocked] = useState(false);
+  const unlockStorageKey = 'low-ticket-video-unlocked';
+
+  useEffect(() => {
+    const hasLocalUnlock = window.localStorage.getItem(unlockStorageKey) === 'true';
+    const hasCookieUnlock = document.cookie.split('; ').some((item) => item === `${unlockStorageKey}=true`);
+    if (hasLocalUnlock || hasCookieUnlock) setCtaUnlocked(true);
+  }, []);
+
+  const unlockCtas = () => {
+    window.localStorage.setItem(unlockStorageKey, 'true');
+    document.cookie = `${unlockStorageKey}=true; max-age=${60 * 60 * 24 * 30}; path=/; SameSite=Lax`;
+    setCtaUnlocked(true);
+  };
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'Person',
@@ -325,7 +374,7 @@ export function LandingPage() {
             <p className="mt-7 max-w-xs text-xs leading-5 text-stone-500">Resultados dependem de aplicação, experiência, mercado, investimento e outros fatores.</p>
           </div>
 
-          <SalesVideo unlocked={ctaUnlocked} onUnlock={() => setCtaUnlocked(true)} />
+          <SalesVideo unlocked={ctaUnlocked} onUnlock={unlockCtas} />
         </div>
         <a href="#trajetoria" className="absolute bottom-5 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 font-mono text-[9px] uppercase tracking-[0.2em] text-stone-600 lg:flex">Conheça minha história<ArrowDown className="size-4 animate-bounce" aria-hidden="true" /></a>
       </section>
@@ -346,6 +395,14 @@ export function LandingPage() {
         </div>
       </section>
       </IntroExperience>
+      {ctaUnlocked && (
+        <div className="fixed inset-x-4 bottom-4 z-50 flex justify-center sm:inset-x-auto sm:right-6 sm:w-auto">
+          <a href={c.links.salesPage} className="group inline-flex min-h-14 w-full items-center justify-center gap-3 rounded-full bg-amber-400 px-7 text-center text-xs font-extrabold uppercase tracking-[0.07em] text-stone-950 shadow-[0_18px_55px_rgba(245,158,11,0.4)] transition duration-300 hover:-translate-y-1 hover:bg-amber-300 active:translate-y-0 sm:w-auto sm:text-sm">
+            Quero me inscrever
+            <ArrowUpRight className="size-4 shrink-0 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
+          </a>
+        </div>
+      )}
 
       <section id="provas" className="px-5 py-24 sm:px-8 lg:px-14 lg:py-40">
         <Reveal className="mx-auto max-w-[1320px]">
