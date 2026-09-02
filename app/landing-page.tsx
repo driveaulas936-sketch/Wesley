@@ -61,13 +61,7 @@ function SalesVideo({ unlocked, onUnlock }: { unlocked: boolean; onUnlock: () =>
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
-  const formatTime = (seconds: number) => {
-    const safeSeconds = Math.ceil(Math.max(0, seconds));
-    const minutes = Math.floor(safeSeconds / 60);
-    return `${String(minutes).padStart(2, '0')}:${String(safeSeconds % 60).padStart(2, '0')}`;
-  };
   const progress = duration > 0 ? Math.min(100, (currentTime / duration) * 100) : 0;
-  const remaining = Math.max(0, duration - currentTime);
 
   const togglePlayback = () => {
     const video = videoRef.current;
@@ -155,14 +149,8 @@ function SalesVideo({ unlocked, onUnlock }: { unlocked: boolean; onUnlock: () =>
             {isMuted ? <VolumeX className="size-5" aria-hidden="true" /> : <Volume2 className="size-5" aria-hidden="true" />}
           </button>
         </div>
-        <div className="absolute inset-x-4 bottom-4 rounded-xl border border-white/10 bg-black/60 px-3 py-2.5 backdrop-blur">
-          <div className="h-1.5 overflow-hidden rounded-full bg-white/10" role="progressbar" aria-label="Progresso do vídeo" aria-valuemin={0} aria-valuemax={Math.round(duration)} aria-valuenow={Math.round(currentTime)}>
-            <div className="h-full rounded-full bg-amber-400 shadow-[0_0_14px_rgba(251,191,36,0.85)] transition-[width] duration-300" style={{ width: `${progress}%` }} />
-          </div>
-          <div className="mt-2 flex items-center justify-between font-mono text-[8px] uppercase tracking-[0.12em] text-stone-400">
-            <span>Progresso do vídeo</span>
-            <span className="text-amber-300">{duration ? `Faltam ${formatTime(remaining)}` : 'Carregando…'}</span>
-          </div>
+        <div className="absolute inset-x-0 bottom-0 h-1 overflow-hidden bg-white/20" role="progressbar" aria-label="Progresso do vídeo" aria-valuemin={0} aria-valuemax={Math.round(duration)} aria-valuenow={Math.round(currentTime)}>
+          <div className="h-full bg-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.9)] transition-[width] duration-300" style={{ width: `${progress}%` }} />
         </div>
       </div>
       <div className="mt-4"><CTAButton label="Quero me inscrever" unlocked={unlocked} pulse /></div>
