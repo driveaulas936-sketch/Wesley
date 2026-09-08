@@ -38,11 +38,11 @@ function SectionHeader({ index, eyebrow, title, text, align = 'left' }: { index:
   );
 }
 
-function CTAButton({ label = 'Quero me inscrever', light = false, unlocked, pulse = false }: { label?: string; light?: boolean; unlocked: boolean; pulse?: boolean }) {
+function CTAButton({ label = 'Quero me inscrever', light = false, pulse = false }: { label?: string; light?: boolean; pulse?: boolean }) {
   const colors = light ? 'bg-stone-950 text-stone-50 hover:bg-stone-800' : 'bg-amber-400 text-stone-950 hover:bg-amber-300';
   const pulseStyle = pulse ? 'animate-[pulse_1.6s_ease-in-out_infinite] ring-2 ring-amber-300/60 ring-offset-4 ring-offset-[#0b0b0a]' : '';
 
-  if (!unlocked) return null;
+
 
   return (
     <a href={c.links.salesPage} className={`group inline-flex min-h-14 w-full items-center justify-center gap-3 rounded-full px-7 text-center text-xs font-extrabold uppercase tracking-[0.07em] shadow-[0_18px_55px_rgba(245,158,11,0.15)] transition duration-300 hover:-translate-y-1 active:translate-y-0 sm:w-auto sm:text-sm ${pulseStyle} ${colors}`}>
@@ -51,8 +51,8 @@ function CTAButton({ label = 'Quero me inscrever', light = false, unlocked, puls
   );
 }
 
-function SalesVideo({ unlocked, onUnlock }: { unlocked: boolean; onUnlock: () => void }) {
-  const unlockAtSeconds = 150;
+function SalesVideo() {
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const lastPlayedTimeRef = useRef(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -114,9 +114,9 @@ function SalesVideo({ unlocked, onUnlock }: { unlocked: boolean; onUnlock: () =>
             lastPlayedTimeRef.current = video.currentTime;
             setCurrentTime(video.currentTime);
             if (video.duration && video.duration !== duration) setDuration(video.duration);
-            if (video.currentTime >= unlockAtSeconds) onUnlock();
+
           }}
-          onEnded={() => { setIsPlaying(false); onUnlock(); }}
+          onEnded={() => setIsPlaying(false)}
           aria-label="Vídeo de apresentação do Low Ticket na Prática"
         >
           <source src="/videos/wesley-vsl.mp4" type="video/mp4" />
@@ -124,7 +124,7 @@ function SalesVideo({ unlocked, onUnlock }: { unlocked: boolean; onUnlock: () =>
         </video>
         <div className="pointer-events-none absolute inset-x-4 top-4 flex items-center justify-between gap-3 rounded-full border border-white/10 bg-black/55 px-4 py-2 font-mono text-[8px] uppercase tracking-[0.14em] text-stone-300 backdrop-blur-md sm:text-[9px]">
           <span>Vídeo de apresentação</span>
-          <span className={unlocked ? 'text-emerald-300' : 'text-amber-300'}>{unlocked ? 'Acesso liberado' : 'Libera aos 02:30'}</span>
+          <span className="text-emerald-300">Inscrições abertas</span>
         </div>
         {isMuted && (
           <button
@@ -153,7 +153,7 @@ function SalesVideo({ unlocked, onUnlock }: { unlocked: boolean; onUnlock: () =>
           <div className="h-full bg-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.9)] transition-[width] duration-300" style={{ width: `${progress}%` }} />
         </div>
       </div>
-      <div className="mt-4"><CTAButton label="Quero me inscrever" unlocked={unlocked} pulse /></div>
+      <div className="mt-4"><CTAButton label="Quero me inscrever" pulse /></div>
       <div className="mt-3 rounded-2xl border border-amber-400/25 bg-[#0b0b0a]/95 px-5 py-4 shadow-2xl backdrop-blur"><p className="font-mono text-[9px] uppercase tracking-[0.18em] text-stone-500">Marco da minha trajetória</p><p className="mt-1 text-2xl font-extrabold tracking-tight text-stone-50">+ R$ 1 milhão</p><p className="text-xs text-amber-300">faturado no digital</p></div>
     </div>
   );
@@ -315,20 +315,6 @@ function IntroExperience({ children }: { children: ReactNode }) {
 }
 
 export function LandingPage() {
-  const [ctaUnlocked, setCtaUnlocked] = useState(false);
-  const unlockStorageKey = 'low-ticket-video-unlocked';
-
-  useEffect(() => {
-    const hasLocalUnlock = window.localStorage.getItem(unlockStorageKey) === 'true';
-    const hasCookieUnlock = document.cookie.split('; ').some((item) => item === `${unlockStorageKey}=true`);
-    if (hasLocalUnlock || hasCookieUnlock) setCtaUnlocked(true);
-  }, []);
-
-  const unlockCtas = () => {
-    window.localStorage.setItem(unlockStorageKey, 'true');
-    document.cookie = `${unlockStorageKey}=true; max-age=${60 * 60 * 24 * 30}; path=/; SameSite=Lax`;
-    setCtaUnlocked(true);
-  };
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'Person',
@@ -339,7 +325,7 @@ export function LandingPage() {
   };
 
   return (
-    <main className="min-h-screen overflow-x-clip bg-background text-foreground">
+    <main className="min-h-screen overflow-x-clip bg-background pb-24 text-foreground">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       <IntroExperience>
       <section id="inicio" className="hero-grid relative isolate min-h-screen">
@@ -362,7 +348,7 @@ export function LandingPage() {
             <p className="mt-7 max-w-xs text-xs leading-5 text-stone-500">Resultados dependem de aplicação, experiência, mercado, investimento e outros fatores.</p>
           </div>
 
-          <SalesVideo unlocked={ctaUnlocked} onUnlock={unlockCtas} />
+          <SalesVideo />
         </div>
         <a href="#trajetoria" className="absolute bottom-5 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 font-mono text-[9px] uppercase tracking-[0.2em] text-stone-600 lg:flex">Conheça minha história<ArrowDown className="size-4 animate-bounce" aria-hidden="true" /></a>
       </section>
@@ -378,19 +364,18 @@ export function LandingPage() {
               <p>Com o conhecimento certo, uma oferta bem montada e uma estrutura organizada, é possível criar uma operação que vende de forma automática, sem precisar estar presente em cada venda.</p>
               <p>Foi esse modelo que me mostrou que é possível construir uma operação simples, escalável e previsível no digital.</p>
             </div>
-            <div className="mt-9"><CTAButton unlocked={ctaUnlocked} /></div>
+            <div className="mt-9"><CTAButton /></div>
           </Reveal>
         </div>
       </section>
       </IntroExperience>
-      {ctaUnlocked && (
+
         <div className="fixed inset-x-4 bottom-4 z-50 flex justify-center sm:inset-x-auto sm:right-6 sm:w-auto">
           <a href={c.links.salesPage} className="group inline-flex min-h-14 w-full items-center justify-center gap-3 rounded-full bg-amber-400 px-7 text-center text-xs font-extrabold uppercase tracking-[0.07em] text-stone-950 shadow-[0_18px_55px_rgba(245,158,11,0.4)] transition duration-300 hover:-translate-y-1 hover:bg-amber-300 active:translate-y-0 sm:w-auto sm:text-sm">
             Quero me inscrever
             <ArrowUpRight className="size-4 shrink-0 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
           </a>
         </div>
-      )}
 
       <section id="provas" className="px-5 py-24 sm:px-8 lg:px-14 lg:py-40">
         <Reveal className="mx-auto max-w-[1320px]">
@@ -438,7 +423,7 @@ export function LandingPage() {
             <div className="mt-10 grid gap-3 sm:grid-cols-2">
               {c.audience.map((item) => <div key={item} className="flex gap-3 rounded-2xl border border-white/10 bg-white/[0.025] p-5"><span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-amber-400/12 text-amber-300"><Check className="size-3.5" aria-hidden="true" /></span><p className="text-sm leading-6 text-stone-300">{item}</p></div>)}
             </div>
-            <div className="mt-9"><CTAButton label="Quero me inscrever" unlocked={ctaUnlocked} /></div>
+            <div className="mt-9"><CTAButton label="Quero me inscrever" /></div>
           </Reveal>
           <Reveal className="lg:pt-24">
             <div className="rounded-[2rem] border border-red-300/10 bg-red-400/[0.035] p-7 sm:p-9"><p className="font-mono text-[10px] uppercase tracking-[0.18em] text-red-300/70">Transparência</p><h3 className="mt-4 text-2xl font-extrabold tracking-tight text-stone-100">Talvez não seja para você se…</h3><div className="mt-7 space-y-4">{c.notFor.map((item) => <div key={item} className="flex gap-3"><X className="mt-0.5 size-4 shrink-0 text-red-300/60" aria-hidden="true" /><p className="text-sm leading-6 text-stone-500">{item}</p></div>)}</div></div>
@@ -492,7 +477,7 @@ export function LandingPage() {
           <div className="overflow-hidden rounded-[2.25rem] border border-amber-400/25 bg-[#11110f] shadow-[0_50px_140px_rgba(0,0,0,0.5)]">
             <div className="grid lg:grid-cols-[1.1fr_0.9fr]">
               <div className="border-b border-white/10 p-7 sm:p-12 lg:border-b-0 lg:border-r lg:p-16"><p className="font-mono text-[10px] uppercase tracking-[0.2em] text-amber-300">10 / A oferta</p><h2 className="mt-5 text-[clamp(2.7rem,6vw,6rem)] font-extrabold leading-[0.91] tracking-[-0.06em] text-stone-50">Comece sua jornada no <span className="text-amber-400">Low Ticket.</span></h2><p className="mt-7 max-w-xl text-base leading-7 text-stone-400">Eu organizei uma estrutura pensada para transformar conceitos soltos em um processo mais claro de produto, oferta, aquisição e otimização.</p><div className="mt-10 rounded-2xl border border-dashed border-white/15 bg-white/[0.02] p-5"><p className="font-mono text-[9px] uppercase tracking-[0.18em] text-stone-600">Nome do treinamento</p><p className="mt-2 text-xl font-bold text-stone-300">{c.offer.name}</p></div></div>
-              <div className="bg-amber-400 p-7 text-stone-950 sm:p-12 lg:p-14"><p className="font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-stone-800/60">Investimento</p><p className="mt-3 text-[clamp(2.4rem,5vw,4.8rem)] font-extrabold leading-none tracking-[-0.06em]">{c.offer.price}</p><p className="mt-3 text-xs font-semibold text-stone-800/65">{c.offer.payment}</p><div className="my-8 h-px bg-stone-950/15" /><ul className="space-y-4">{c.offer.items.map((item, index) => <li key={`${index}-${item}`} className="flex gap-3 text-sm font-semibold"><span className="grid size-5 shrink-0 place-items-center rounded-full bg-stone-950 text-amber-300"><Check className="size-3" aria-hidden="true" /></span>{item}</li>)}</ul><div className="mt-10"><CTAButton label="Quero me inscrever" light unlocked={ctaUnlocked} /></div><p className="mt-5 text-center text-[10px] leading-4 text-stone-800/65">Pagamento seguro via PIX ou cartão de crédito.</p></div>
+              <div className="bg-amber-400 p-7 text-stone-950 sm:p-12 lg:p-14"><p className="font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-stone-800/60">Investimento</p><p className="mt-3 text-[clamp(2.4rem,5vw,4.8rem)] font-extrabold leading-none tracking-[-0.06em]">{c.offer.price}</p><p className="mt-3 text-xs font-semibold text-stone-800/65">{c.offer.payment}</p><div className="my-8 h-px bg-stone-950/15" /><ul className="space-y-4">{c.offer.items.map((item, index) => <li key={`${index}-${item}`} className="flex gap-3 text-sm font-semibold"><span className="grid size-5 shrink-0 place-items-center rounded-full bg-stone-950 text-amber-300"><Check className="size-3" aria-hidden="true" /></span>{item}</li>)}</ul><div className="mt-10"><CTAButton label="Quero me inscrever" light /></div><p className="mt-5 text-center text-[10px] leading-4 text-stone-800/65">Pagamento seguro via PIX ou cartão de crédito.</p></div>
             </div>
           </div>
         </Reveal>
@@ -500,7 +485,7 @@ export function LandingPage() {
 
       <section className="relative overflow-hidden border-y border-amber-400/20 bg-amber-400 px-5 py-24 text-stone-950 sm:px-8 lg:px-14 lg:py-36">
         <div className="absolute inset-y-0 right-0 w-1/2 bg-[radial-gradient(circle_at_60%_50%,rgba(255,255,255,0.25),transparent_55%)]" />
-        <Reveal className="relative mx-auto max-w-[1100px] text-center"><p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-stone-800/60">11 / O próximo passo</p><h2 className="mx-auto mt-5 max-w-5xl text-[clamp(3rem,7vw,7rem)] font-extrabold leading-[0.9] tracking-[-0.07em]">Todo resultado começa de algum lugar.</h2><p className="mx-auto mt-7 max-w-2xl text-base font-medium leading-7 text-stone-800/75 sm:text-lg sm:leading-8">Eu também tive um ponto de partida. Antes dos sete dígitos, tomei a decisão de começar e aprender uma nova habilidade.</p><p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-stone-800/65">Se você quer conhecer a estratégia que faz parte da minha trajetória, o próximo passo está aqui.</p><div className="mt-9"><CTAButton light unlocked={ctaUnlocked} /></div></Reveal>
+        <Reveal className="relative mx-auto max-w-[1100px] text-center"><p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-stone-800/60">11 / O próximo passo</p><h2 className="mx-auto mt-5 max-w-5xl text-[clamp(3rem,7vw,7rem)] font-extrabold leading-[0.9] tracking-[-0.07em]">Todo resultado começa de algum lugar.</h2><p className="mx-auto mt-7 max-w-2xl text-base font-medium leading-7 text-stone-800/75 sm:text-lg sm:leading-8">Eu também tive um ponto de partida. Antes dos sete dígitos, tomei a decisão de começar e aprender uma nova habilidade.</p><p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-stone-800/65">Se você quer conhecer a estratégia que faz parte da minha trajetória, o próximo passo está aqui.</p><div className="mt-9"><CTAButton light /></div></Reveal>
       </section>
 
       <footer className="border-t border-white/10 bg-[#070707] px-5 py-12 sm:px-8 lg:px-14">
