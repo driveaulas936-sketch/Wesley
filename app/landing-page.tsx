@@ -26,12 +26,9 @@ function Reveal({ children, className = '' }: { children: ReactNode; className?:
   return <div ref={ref} className={`reveal ${visible ? 'is-visible' : ''} ${className}`}>{children}</div>;
 }
 
-function SectionHeader({ index, eyebrow, title, text, align = 'left' }: { index: string; eyebrow: string; title: string; text?: string; align?: 'left' | 'center' }) {
+function SectionHeader({ title, text, align = 'left' }: { title: string; text?: string; align?: 'left' | 'center' }) {
   return (
     <div className={align === 'center' ? 'mx-auto max-w-4xl text-center' : 'max-w-4xl'}>
-      <div className={`mb-5 flex items-center gap-3 font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-amber-300 ${align === 'center' ? 'justify-center' : ''}`}>
-        <span className="text-stone-600">{index}</span><span className="h-px w-7 bg-amber-400/60" />{eyebrow}
-      </div>
       <h2 className="text-[clamp(2.25rem,5vw,5.2rem)] font-extrabold leading-[0.97] tracking-[-0.05em] text-stone-50">{title}</h2>
       {text && <p className={`mt-6 max-w-2xl text-base leading-7 text-stone-400 sm:text-lg sm:leading-8 ${align === 'center' ? 'mx-auto' : ''}`}>{text}</p>}
     </div>
@@ -345,7 +342,7 @@ export function LandingPage() {
               {c.hero.headlineStart} <span className="text-amber-400">{c.hero.headlineHighlight}</span> {c.hero.headlineEnd}
             </h1>
             <p className="mt-7 max-w-2xl text-base leading-7 text-stone-400 sm:text-lg sm:leading-8">{c.hero.subheadline}</p>
-            <p className="mt-7 max-w-xs text-xs leading-5 text-stone-500">Resultados dependem de aplicação, experiência, mercado, investimento e outros fatores.</p>
+
           </div>
 
           <SalesVideo />
@@ -357,7 +354,7 @@ export function LandingPage() {
         <div className="mx-auto grid max-w-[1320px] gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-20">
           <Reveal><StoryPhotoGallery /></Reveal>
           <Reveal>
-            <SectionHeader index="01" eyebrow="Minha história" title="Antes do digital, a minha realidade era completamente diferente." />
+            <SectionHeader title="Antes do digital, a minha realidade era completamente diferente." />
             <div className="mt-8 space-y-5 text-base leading-8 text-stone-400">
               <p>Antes de viver do digital, eu trabalhava como porteiro. Quando entrei nesse mercado, comecei a entender como funcionavam os produtos digitais, os anúncios e toda a estrutura por trás de uma operação de vendas online.</p>
               <p>Foi no Low Ticket que encontrei o modelo que mais fez sentido para mim. A barreira de entrada é muito baixa quando comparada a outros modelos de negócio, e você não precisa começar com uma grande estrutura ou investimento alto.</p>
@@ -379,7 +376,7 @@ export function LandingPage() {
 
       <section id="provas" className="px-5 py-24 sm:px-8 lg:px-14 lg:py-40">
         <Reveal className="mx-auto max-w-[1320px]">
-          <SectionHeader index="02" eyebrow="Resultados dos alunos" title="O conhecimento não ficou só comigo." text="Essa foi a minha transformação. Mas o mais importante é que esse conhecimento também está sendo colocado em prática por alunos." />
+          <SectionHeader title="O conhecimento não ficou só comigo." text="Essa foi a minha transformação. Mas o mais importante é que esse conhecimento também está sendo colocado em prática por alunos." />
           <div className="proof-scroll -mx-5 mt-12 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-4">
             {socialProofs.map((proof, index) => (
               <figure key={proof.src} className="group min-w-[82vw] snap-center overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/[0.03] p-2.5 sm:min-w-0 sm:rounded-[2rem] sm:p-3">
@@ -390,13 +387,13 @@ export function LandingPage() {
               </figure>
             ))}
           </div>
-          <p className="mt-5 max-w-3xl text-xs leading-5 text-stone-600">Os registros foram compartilhados por alunos e não representam promessa ou garantia de resultados individuais.</p>
+
         </Reveal>
       </section>
 
       <section className="method-lines px-5 py-24 sm:px-8 lg:px-14 lg:py-40">
         <Reveal className="mx-auto max-w-[1320px]">
-          <SectionHeader index="03" eyebrow="O método" title="O método vai muito além de colocar um produto barato na internet." text="Eu organizo uma operação de low ticket em etapas. Cada uma prepara a próxima — e os dados ajudam a orientar o caminho." />
+          <SectionHeader title="O método vai muito além de colocar um produto barato na internet." text="Eu organizo uma operação de low ticket em etapas. Cada uma prepara a próxima — e os dados ajudam a orientar o caminho." />
           <div className="mt-16 border-y border-white/10">
             {c.method.map((step, index) => (
               <article key={step.title} className="group grid gap-4 border-b border-white/10 py-7 last:border-b-0 sm:grid-cols-[90px_1fr_1.15fr_auto] sm:items-center sm:gap-7 sm:py-8">
@@ -409,39 +406,26 @@ export function LandingPage() {
 
       <section className="bg-[#e8e1d4] px-5 py-24 text-stone-950 sm:px-8 lg:px-14 lg:py-36">
         <Reveal className="mx-auto max-w-[1320px]">
-          <div className="max-w-4xl"><p className="mb-5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-amber-700">04 / Os benefícios</p><h2 className="text-[clamp(2.5rem,6vw,6.2rem)] font-extrabold leading-[0.94] tracking-[-0.06em]">Por que produtos <span className="text-amber-700">Low Ticket?</span></h2><p className="mt-6 max-w-2xl text-base leading-7 text-stone-600 sm:text-lg sm:leading-8">Produtos digitais de entrada possuem valores mais acessíveis e podem reduzir a barreira inicial de compra. Não é dinheiro fácil: é uma forma de estruturar uma oferta simples e aprender com o mercado.</p></div>
+          <div className="max-w-4xl"><h2 className="text-[clamp(2.5rem,6vw,6.2rem)] font-extrabold leading-[0.94] tracking-[-0.06em]">Por que produtos <span className="text-amber-700">Low Ticket?</span></h2><p className="mt-6 max-w-2xl text-base leading-7 text-stone-600 sm:text-lg sm:leading-8">Produtos digitais de entrada possuem valores mais acessíveis e podem reduzir a barreira inicial de compra. Não é dinheiro fácil: é uma forma de estruturar uma oferta simples e aprender com o mercado.</p></div>
           <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {c.lowTicketBenefits.map((item, index) => { const Icon = benefitIcons[index]; return <article key={item.title} className="group min-h-64 rounded-3xl border border-stone-950/10 bg-white/35 p-7 transition duration-300 hover:-translate-y-1 hover:bg-white/60 sm:p-8"><span className="grid size-12 place-items-center rounded-2xl bg-stone-950 text-amber-300"><Icon className="size-5" aria-hidden="true" /></span><p className="mt-9 font-mono text-[9px] uppercase tracking-[0.18em] text-stone-500">0{index + 1}</p><h3 className="mt-2 text-2xl font-extrabold tracking-tight">{item.title}</h3><p className="mt-3 text-sm leading-6 text-stone-600">{item.text}</p></article>; })}
           </div>
         </Reveal>
       </section>
 
-      <section className="border-y border-white/8 bg-[#0d0d0c] px-5 py-24 sm:px-8 lg:px-14 lg:py-36">
-        <div className="mx-auto grid max-w-[1320px] gap-12 lg:grid-cols-[1fr_0.72fr] lg:gap-20">
-          <Reveal>
-            <SectionHeader index="05" eyebrow="Para quem é" title="Esse modelo pode fazer sentido para você se…" />
-            <div className="mt-10 grid gap-3 sm:grid-cols-2">
-              {c.audience.map((item) => <div key={item} className="flex gap-3 rounded-2xl border border-white/10 bg-white/[0.025] p-5"><span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-amber-400/12 text-amber-300"><Check className="size-3.5" aria-hidden="true" /></span><p className="text-sm leading-6 text-stone-300">{item}</p></div>)}
-            </div>
-            <div className="mt-9"><CTAButton label="Quero me inscrever" /></div>
-          </Reveal>
-          <Reveal className="lg:pt-24">
-            <div className="rounded-[2rem] border border-red-300/10 bg-red-400/[0.035] p-7 sm:p-9"><p className="font-mono text-[10px] uppercase tracking-[0.18em] text-red-300/70">Transparência</p><h3 className="mt-4 text-2xl font-extrabold tracking-tight text-stone-100">Talvez não seja para você se…</h3><div className="mt-7 space-y-4">{c.notFor.map((item) => <div key={item} className="flex gap-3"><X className="mt-0.5 size-4 shrink-0 text-red-300/60" aria-hidden="true" /><p className="text-sm leading-6 text-stone-500">{item}</p></div>)}</div></div>
-          </Reveal>
-        </div>
-      </section>
+
 
       <section className="relative overflow-hidden bg-amber-400 px-5 py-24 text-stone-950 sm:px-8 lg:px-14 lg:py-36">
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.05)_1px,transparent_1px)] bg-[size:80px_80px]" />
         <Reveal className="relative mx-auto max-w-[1320px]">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-stone-800/60">06 / Autoridade construída</p><h2 className="mt-4 max-w-4xl text-[clamp(2.3rem,5vw,5.4rem)] font-extrabold leading-[0.95] tracking-[-0.055em]">Do meu ponto de partida aos primeiros sete dígitos.</h2>
-          <div className="mt-12"><AnimatedRevenue /></div><p className="mt-6 max-w-2xl text-base font-medium leading-7 text-stone-800/75">Construídos ao longo da minha trajetória no mercado digital.</p><p className="mt-10 max-w-3xl border-l border-stone-950/30 pl-4 text-xs leading-5 text-stone-800/70">Esse resultado se refere à minha trajetória e não representa garantia de ganhos ou resultados individuais.</p>
+          <h2 className="mt-4 max-w-4xl text-[clamp(2.3rem,5vw,5.4rem)] font-extrabold leading-[0.95] tracking-[-0.055em]">Do meu ponto de partida aos primeiros sete dígitos.</h2>
+          <div className="mt-12"><AnimatedRevenue /></div><p className="mt-6 max-w-2xl text-base font-medium leading-7 text-stone-800/75">Construídos ao longo da minha trajetória no mercado digital.</p>
         </Reveal>
       </section>
 
       <section className="border-y border-white/8 bg-[#0d0d0c] px-5 py-24 sm:px-8 lg:px-14 lg:py-36">
         <Reveal className="mx-auto max-w-[1320px]">
-          <SectionHeader index="07" eyebrow="Conteúdo provisório" title="O caminho, organizado passo a passo." text="Os nomes abaixo são provisórios e ficam centralizados no arquivo de conteúdo para substituição pelos módulos reais." />
+          <SectionHeader title="O caminho, organizado passo a passo." text="Os nomes abaixo são provisórios e ficam centralizados no arquivo de conteúdo para substituição pelos módulos reais." />
           <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {c.modules.map((module, index) => <article key={module.number} className={`relative overflow-hidden rounded-3xl border p-7 sm:p-8 ${index === 6 ? 'border-amber-400/30 bg-amber-400/[0.07] lg:col-span-3' : 'border-white/10 bg-white/[0.025]'}`}><span className="font-mono text-xs text-amber-300">Módulo {module.number}</span><h3 className="mt-12 max-w-sm text-2xl font-extrabold leading-tight tracking-[-0.035em] text-stone-100">{module.title}</h3><Layers3 className="absolute -bottom-5 -right-4 size-28 text-white/[0.035]" aria-hidden="true" /></article>)}
           </div>
@@ -450,7 +434,7 @@ export function LandingPage() {
 
       <section className="px-5 py-24 sm:px-8 lg:px-14 lg:py-40">
         <div className="mx-auto grid max-w-[1320px] gap-12 lg:grid-cols-[1fr_0.9fr] lg:items-center lg:gap-20">
-          <Reveal><SectionHeader index="08" eyebrow="O diferencial" title="Aprenda comigo: eu continuo no jogo." text="O conteúdo nasce da experiência prática que construí operando no mercado digital e utilizando o modelo low ticket no meu próprio negócio." /><div className="mt-9 flex gap-4 border-l border-amber-400/50 pl-5"><Sparkles className="mt-1 size-5 shrink-0 text-amber-300" aria-hidden="true" /><p className="max-w-lg text-sm leading-7 text-stone-400">O que compartilho vem do conhecimento que adquiri na prática ao longo da minha trajetória, organizado para ser compreendido e aplicado.</p></div></Reveal>
+          <Reveal><SectionHeader title="Aprenda comigo: eu continuo no jogo." text="O conteúdo nasce da experiência prática que construí operando no mercado digital e utilizando o modelo low ticket no meu próprio negócio." /><div className="mt-9 flex gap-4 border-l border-amber-400/50 pl-5"><Sparkles className="mt-1 size-5 shrink-0 text-amber-300" aria-hidden="true" /><p className="max-w-lg text-sm leading-7 text-stone-400">O que compartilho vem do conhecimento que adquiri na prática ao longo da minha trajetória, organizado para ser compreendido e aplicado.</p></div></Reveal>
           <Reveal>
             <figure className="group relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/10 bg-[#11110f] shadow-[0_32px_90px_rgba(0,0,0,0.35)]">
               <img src="/images/wesley-authority.jpg" alt="Wesley Rodrigues" width={1440} height={1800} loading="lazy" decoding="async" className="size-full object-cover object-center transition duration-700 group-hover:scale-[1.02]" />
@@ -463,12 +447,12 @@ export function LandingPage() {
 
       <section className="bg-[#e8e1d4] px-5 py-24 text-stone-950 sm:px-8 lg:px-14 lg:py-36">
         <Reveal className="mx-auto max-w-[1320px]">
-          <div className="max-w-4xl"><p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-amber-700">09 / Clareza antes da escala</p><h2 className="mt-5 text-[clamp(2.3rem,5vw,5.2rem)] font-extrabold leading-[0.96] tracking-[-0.055em]">O que muda quando existe um caminho.</h2></div>
+          <div className="max-w-4xl"><h2 className="mt-5 text-[clamp(2.3rem,5vw,5.2rem)] font-extrabold leading-[0.96] tracking-[-0.055em]">O que muda quando existe um caminho.</h2></div>
           <div className="mt-14 grid overflow-hidden rounded-[2rem] border border-stone-950/10 lg:grid-cols-2">
             <div className="bg-stone-950 p-7 text-stone-50 sm:p-10"><p className="font-mono text-[10px] uppercase tracking-[0.18em] text-red-300">Antes</p><div className="mt-8 space-y-5">{c.journey.before.map((item) => <div key={item} className="flex gap-3 border-b border-white/10 pb-5 last:border-b-0"><X className="mt-1 size-4 shrink-0 text-red-300/70" aria-hidden="true" /><p className="text-sm leading-6 text-stone-400">{item}</p></div>)}</div></div>
             <div className="bg-white/45 p-7 sm:p-10"><p className="font-mono text-[10px] uppercase tracking-[0.18em] text-amber-700">Depois do conhecimento</p><div className="mt-8 space-y-5">{c.journey.after.map((item) => <div key={item} className="flex gap-3 border-b border-stone-950/10 pb-5 last:border-b-0"><Check className="mt-1 size-4 shrink-0 text-amber-700" aria-hidden="true" /><p className="text-sm font-medium leading-6 text-stone-700">{item}</p></div>)}</div></div>
           </div>
-          <p className="mt-5 text-xs leading-5 text-stone-500">A comparação descreve aprendizado e organização — não promessa de faturamento.</p>
+
         </Reveal>
       </section>
 
@@ -476,7 +460,7 @@ export function LandingPage() {
         <Reveal className="mx-auto max-w-[1180px]">
           <div className="overflow-hidden rounded-[2.25rem] border border-amber-400/25 bg-[#11110f] shadow-[0_50px_140px_rgba(0,0,0,0.5)]">
             <div className="grid lg:grid-cols-[1.1fr_0.9fr]">
-              <div className="border-b border-white/10 p-7 sm:p-12 lg:border-b-0 lg:border-r lg:p-16"><p className="font-mono text-[10px] uppercase tracking-[0.2em] text-amber-300">10 / A oferta</p><h2 className="mt-5 text-[clamp(2.7rem,6vw,6rem)] font-extrabold leading-[0.91] tracking-[-0.06em] text-stone-50">Comece sua jornada no <span className="text-amber-400">Low Ticket.</span></h2><p className="mt-7 max-w-xl text-base leading-7 text-stone-400">Eu organizei uma estrutura pensada para transformar conceitos soltos em um processo mais claro de produto, oferta, aquisição e otimização.</p><div className="mt-10 rounded-2xl border border-dashed border-white/15 bg-white/[0.02] p-5"><p className="font-mono text-[9px] uppercase tracking-[0.18em] text-stone-600">Nome do treinamento</p><p className="mt-2 text-xl font-bold text-stone-300">{c.offer.name}</p></div></div>
+              <div className="border-b border-white/10 p-7 sm:p-12 lg:border-b-0 lg:border-r lg:p-16"><h2 className="mt-5 text-[clamp(2.7rem,6vw,6rem)] font-extrabold leading-[0.91] tracking-[-0.06em] text-stone-50">Comece sua jornada no <span className="text-amber-400">Low Ticket.</span></h2><p className="mt-7 max-w-xl text-base leading-7 text-stone-400">Eu organizei uma estrutura pensada para transformar conceitos soltos em um processo mais claro de produto, oferta, aquisição e otimização.</p><div className="mt-10 rounded-2xl border border-dashed border-white/15 bg-white/[0.02] p-5"><p className="font-mono text-[9px] uppercase tracking-[0.18em] text-stone-600">Nome do treinamento</p><p className="mt-2 text-xl font-bold text-stone-300">{c.offer.name}</p></div></div>
               <div className="bg-amber-400 p-7 text-stone-950 sm:p-12 lg:p-14"><p className="font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-stone-800/60">Investimento</p><p className="mt-3 text-[clamp(2.4rem,5vw,4.8rem)] font-extrabold leading-none tracking-[-0.06em]">{c.offer.price}</p><p className="mt-3 text-xs font-semibold text-stone-800/65">{c.offer.payment}</p><div className="my-8 h-px bg-stone-950/15" /><ul className="space-y-4">{c.offer.items.map((item, index) => <li key={`${index}-${item}`} className="flex gap-3 text-sm font-semibold"><span className="grid size-5 shrink-0 place-items-center rounded-full bg-stone-950 text-amber-300"><Check className="size-3" aria-hidden="true" /></span>{item}</li>)}</ul><div className="mt-10"><CTAButton label="Quero me inscrever" light /></div><p className="mt-5 text-center text-[10px] leading-4 text-stone-800/65">Pagamento seguro via PIX ou cartão de crédito.</p></div>
             </div>
           </div>
@@ -485,7 +469,7 @@ export function LandingPage() {
 
       <section className="relative overflow-hidden border-y border-amber-400/20 bg-amber-400 px-5 py-24 text-stone-950 sm:px-8 lg:px-14 lg:py-36">
         <div className="absolute inset-y-0 right-0 w-1/2 bg-[radial-gradient(circle_at_60%_50%,rgba(255,255,255,0.25),transparent_55%)]" />
-        <Reveal className="relative mx-auto max-w-[1100px] text-center"><p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-stone-800/60">11 / O próximo passo</p><h2 className="mx-auto mt-5 max-w-5xl text-[clamp(3rem,7vw,7rem)] font-extrabold leading-[0.9] tracking-[-0.07em]">Todo resultado começa de algum lugar.</h2><p className="mx-auto mt-7 max-w-2xl text-base font-medium leading-7 text-stone-800/75 sm:text-lg sm:leading-8">Eu também tive um ponto de partida. Antes dos sete dígitos, tomei a decisão de começar e aprender uma nova habilidade.</p><p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-stone-800/65">Se você quer conhecer a estratégia que faz parte da minha trajetória, o próximo passo está aqui.</p><div className="mt-9"><CTAButton light /></div></Reveal>
+        <Reveal className="relative mx-auto max-w-[1100px] text-center"><h2 className="mx-auto mt-5 max-w-5xl text-[clamp(3rem,7vw,7rem)] font-extrabold leading-[0.9] tracking-[-0.07em]">Todo resultado começa de algum lugar.</h2><p className="mx-auto mt-7 max-w-2xl text-base font-medium leading-7 text-stone-800/75 sm:text-lg sm:leading-8">Eu também tive um ponto de partida. Antes dos sete dígitos, tomei a decisão de começar e aprender uma nova habilidade.</p><p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-stone-800/65">Se você quer conhecer a estratégia que faz parte da minha trajetória, o próximo passo está aqui.</p><div className="mt-9"><CTAButton light /></div></Reveal>
       </section>
 
       <footer className="border-t border-white/10 bg-[#070707] px-5 py-12 sm:px-8 lg:px-14">

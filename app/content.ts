@@ -77,7 +77,7 @@ export const siteContent = {
   },
   offer: {
     name: 'LOW TICKET NA PRÁTICA',
-    price: '12x de R$ 35,00',
+    price: '12x de 30,00',
     payment: 'no cartão de crédito',
     items: [
       'Acesso ao treinamento',
