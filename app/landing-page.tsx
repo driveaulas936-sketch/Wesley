@@ -212,6 +212,8 @@ const socialProofs = [
   { src: '/images/proof-02.jpeg', alt: 'Relato de aluno sobre suas primeiras vendas', width: 1148, height: 1600 },
   { src: '/images/proof-03.jpeg', alt: 'Registros de vendas compartilhados por aluna', width: 1100, height: 1600 },
   { src: '/images/proof-04.jpeg', alt: 'Resultado de aluna com 35 vendas realizadas no período', width: 1206, height: 1600 },
+  { src: '/images/proof-05.jpeg', alt: 'Resultado compartilhado por aluno: 177 vendas e receita de R$ 2.028,87', width: 1284, height: 1023 },
+  { src: '/images/proof-06.jpeg', alt: 'Resultado compartilhado por aluno: receita de R$ 1.839,67', width: 1284, height: 954 },
 ] as const;
 
 function FloatingNotification({ icon, eyebrow, title, detail, className, elementRef }: { icon: ReactNode; eyebrow: string; title: string; detail: string; className: string; elementRef: (node: HTMLDivElement | null) => void }) {
